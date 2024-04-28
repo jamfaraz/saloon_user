@@ -8,7 +8,6 @@ import 'package:saloon_app/screens/dashboard/search_screen.dart';
 import 'package:saloon_app/screens/profile/profile.dart';
 
 import '../../../../controllers/auth_controller.dart';
-import '../../../../controllers/data_controller.dart';
 import '../../../../controllers/notification.dart';
 
 class Dashboard extends StatefulWidget {
@@ -27,7 +26,6 @@ class _DashboardState extends State<Dashboard>
   @override
   void initState() {
     super.initState();
-    Get.put(DataController(), permanent: true);
 
     FirebaseMessaging.instance.getInitialMessage();
     FirebaseMessaging.onMessage.listen((message) {
