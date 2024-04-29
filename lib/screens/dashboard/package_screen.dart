@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:saloon_app/screens/dashboard/book_barber_screen.dart';
 
 import '../../controllers/profile_controller.dart';
 
@@ -156,7 +157,7 @@ class _PackageScreenState extends State<PackageScreen> {
                                               width: 73,
                                             ),
                                             Text(
-                                              data['price'],
+                                              'Rs.${data['price']}',
                                               style: const TextStyle(
                                                 color: Color(0xFF474747),
                                                 fontSize: 14,
@@ -221,8 +222,8 @@ class _PackageScreenState extends State<PackageScreen> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            
-                                          },
+                                            Get.to(()=>BarberBookingScreen(barberId: widget.id, name: data['username'], image: data['image']))
+                                          ;},
                                           child: Container(
                                             margin: EdgeInsets.only(
                                                 left: Get.width * .44),

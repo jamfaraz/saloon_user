@@ -195,7 +195,7 @@ class AboutScreen extends StatelessWidget {
             ),
           ],
         ),
-        // elevation: 1,
+        elevation: 1,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

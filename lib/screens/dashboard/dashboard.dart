@@ -47,7 +47,7 @@ class _DashboardState extends State<Dashboard>
         index: selectedIndex,
         children: const [
           HomeScreen(),
-          MyOrderScreen(),
+          MyBookingScreen(),
           SearchScreen(),
           Profile(),
         ],

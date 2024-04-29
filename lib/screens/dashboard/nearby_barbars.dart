@@ -304,7 +304,7 @@ class _NearbyBarbarsState extends State<NearbyBarbars> {
                                                           ),
                                                           child: const Center(
                                                             child: Text(
-                                                              'Book Now',
+                                                              'Packages',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white,

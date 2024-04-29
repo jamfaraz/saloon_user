@@ -2,31 +2,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../controllers/profile_controller.dart';
 
-class MyOrderScreen extends StatefulWidget {
-  const MyOrderScreen({super.key});
+class MyBookingScreen extends StatefulWidget {
+  const MyBookingScreen({super.key});
 
   @override
-  State<MyOrderScreen> createState() => _MyOrderScreenState();
+  State<MyBookingScreen> createState() => _MyBookingScreenState();
 }
 
-class _MyOrderScreenState extends State<MyOrderScreen> {
-  String searchText = "";
+class _MyBookingScreenState extends State<MyBookingScreen> {
   TextEditingController searchController = TextEditingController();
+  String selectedCategory = '';
+  String searchText = "";
+//
   ProfileController profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, centerTitle: true,
-         title: Row(
+        automaticallyImplyLeading: false,
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-         
-            const Text(
-              'My Requests',
+            Text(
+              'My Bookings',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF1A1A1A),
                 fontSize: 20,
@@ -38,223 +42,182 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
         elevation: 1,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 8),
+        padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('posts')
-                    .where('userId',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                    .orderBy('time', descending: true)
-                    .snapshots(),
-                //
-                //
-
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: Get.height * .4),
-                      child: const Center(child: CircularProgressIndicator()),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: Get.height * .4),
-                      child: const Center(
-                        child: Text(
-                          'You have not any order yet.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.redAccent),
-                        ),
+              16.heightBox,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: TextFormField(
+                    controller: searchController,
+                    cursorColor: Colors.red,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      border: InputBorder.none,
+                      prefixIcon: (searchText.isEmpty)
+                          ? const Icon(
+                              Icons.search,
+                              color: Colors.red,
+                            )
+                          : IconButton(
+                              icon: const Icon(
+                                Icons.clear,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                searchText = '';
+                                searchController.clear();
+                                setState(() {});
+                              },
+                            ),
+                      hintStyle: const TextStyle(
+                        fontSize: 14,
                       ),
-                    );
-                  } else {
-                    //
-
-                    return Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data?.docs.length ?? 0,
-                          physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemBuilder: (context, index) {
-                            final data = snapshot.data!.docs[index];
-
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchText = value;
+                      });
+                    }),
+              ),
+              const SizedBox(height: 14),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('appointments')
+                      .orderBy('barberName')
+                      .where('userId',
+                          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                      .startAt([searchText.toUpperCase()]).endAt(
+                          ['$searchText\uf8ff']).snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child: Padding(
+                        padding: EdgeInsets.only(top: 233),
+                        child: CircularProgressIndicator(),
+                      ));
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return const Center(
+                          child: Padding(
+                        padding: EdgeInsets.only(top: 253),
+                        child: Text(
+                          'You have not any booking yet',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.red),
+                        ),
+                      ));
+                    } else {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemCount: snapshot.data?.docs.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final e = snapshot.data!.docs[index];
+                          if (e["barberName"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
                             return Column(
                               children: [
-                                const SizedBox(
-                                  height: 4,
-                                ),
                                 Card(
                                   shadowColor: Colors.black,
                                   color: Colors.white,
                                   elevation: 13,
                                   child: Container(
-                                    // height: 166,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 8),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundImage: NetworkImage(
-                                                      data['image']),
-                                                ),
-                                                const SizedBox(
-                                                  width: 9,
-                                                ),
-                                                Text(
-                                                  data['username'],
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF474747),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (context) =>
-                                                            AlertDialog(
-                                                              title: const Text(
-                                                                  "Are you sure ?"),
-                                                              content: const Text(
-                                                                  "Click Confirm if you want to delete this item"),
-                                                              actions: [
-                                                                TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child: const Text(
-                                                                        "Cancel")),
-                                                                TextButton(
-                                                                    onPressed:
-                                                                        ()  {
-                                                                       profileController
-                                                                          .deletePost(
-                                                                              data.id);
-                                                                      Get.back();
-                                                                    },
-                                                                    child:
-                                                                        const Text(
-                                                                      "Delete",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .red,
-                                                                      ),
-                                                                    ))
-                                                              ],
-                                                            ));
-                                              },
-                                              child: const Text(
-                                                "delete",
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      horizontalTitleGap: 0,
+                                      leading: CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: NetworkImage(
+                                          e['barberImage'],
                                         ),
-                                        const SizedBox(
-                                          height: 6,
+                                      ),
+                                      title: Text(
+                                        e['barberName'],
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  'Blood type',
-                                                  style: TextStyle(
-                                                    color: Colors.green,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  data['category'],
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF474747),
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  'Address',
-                                                  style: TextStyle(
-                                                    color: Colors.green,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  data['address'],
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF474747),
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
+                                      ),
+                                      subtitle: Text(
+                                        '${e['date']}  ${e['time']}',
+                                        style: const TextStyle(
+                                          fontSize: 10,
                                         ),
-                                        const SizedBox(
-                                          height: 12,
+                                      ),
+                                      trailing: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                    title: const Text(
+                                                        "Are you sure ?"),
+                                                    content: const Text(
+                                                        "Click Confirm if you want to delete this item"),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: const Text(
+                                                              "Cancel")),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            profileController
+                                                                .deleteAppointment(
+                                                                    e.id);
+                                                            Get.back();
+                                                          },
+                                                          child: const Text(
+                                                            "Delete",
+                                                            style: TextStyle(
+                                                              color: Colors.red,
+                                                            ),
+                                                          ))
+                                                    ],
+                                                  ));
+                                        },
+                                        child: const Text(
+                                          "delete",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Flexible(
-                                                child: Text(
-                                              data['post'],
-                                            ))
-                                          ],
-                                        )
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             );
-                          },
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      );
+                    }
+                  }),
             ],
           ),
         ),

@@ -255,113 +255,108 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Column(
+                                    child: Row(
+                                    
                                       children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              width: 60,
-                                              height: 76,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image:
-                                                      NetworkImage(e['image']),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6)),
-                                              ),
+                                        Container(
+                                          width: 60,
+                                          height: 76,
+                                          decoration: ShapeDecoration(
+                                            image: DecorationImage(
+                                              image:
+                                                  NetworkImage(e['image']),
+                                              fit: BoxFit.cover,
                                             ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Column(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        6)),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                bottom: 52),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              e['username'],
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              e['contact'], // Replace with your experience text
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .black54,
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            bottom: 2),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          e['username'],
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          Get.to(() =>
-                                                              PackageScreen(
-                                                                id: e[
-                                                                    'donorId'],
-                                                              ));
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                          height: 28,
-                                                          decoration:
-                                                              BoxDecoration(
+                                                        Text(
+                                                          e['contact'], // Replace with your experience text
+                                                          style:
+                                                              const TextStyle(
                                                             color: Colors
-                                                                .redAccent,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        4),
+                                                                .black54,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400,
                                                           ),
-                                                          child: const Center(
-                                                            child: Text(
-                                                              'Book Now',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 12,
-                                                              ),
-                                                            ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Get.to(() =>
+                                                          PackageScreen(
+                                                            id: e[
+                                                                'donorId'],
+                                                          ));
+                                                    },
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                                  8),
+                                                      height: 28,
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        color: Colors
+                                                            .redAccent,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    4),
+                                                      ),
+                                                      child: const Center(
+                                                        child: Text(
+                                                          'Packages',
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .white,
+                                                            fontSize: 12,
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

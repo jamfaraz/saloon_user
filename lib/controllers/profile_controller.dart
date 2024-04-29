@@ -152,9 +152,9 @@ class ProfileController extends GetxController {
 
 //
 //
-  Future deletePost(String id) async {
+  Future deleteAppointment(String id) async {
     await FirebaseFirestore.instance
-        .collection("posts")
+        .collection("appointments")
         .doc(id)
         .delete()
         .then((value) {});
