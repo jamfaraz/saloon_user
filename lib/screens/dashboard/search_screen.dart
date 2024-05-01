@@ -26,17 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  bool isSelected = false;
-
-  List<String> experience = [
-    'A+',
-    'B+',
-    'O+',
-    'AB',
-    'A-',
-    'B-',
-    'O-',
-  ];
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -103,105 +93,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     }),
               ),
 
-              // const SizedBox(
-              //   height: 12,
-              // ),
+         
 
-              const SizedBox(height: 24),
-              // SizedBox(
-              //   height: 30,
-              //   child: Row(
-              //     children: [
-              //       InkWell(
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = '';
-              //           });
-              //         },
-              //         child: Container(
-              //           margin: const EdgeInsets.symmetric(horizontal: 4),
-              //           decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(33),
-              //               color: Colors.black),
-              //           height: 44,
-              //           width: 59,
-              //           child: const Center(
-              //               child: Text(
-              //             'All',
-              //             style: TextStyle(
-              //                 color: Colors.white,
-              //                 fontSize: 16,
-              //                 fontWeight: FontWeight.w500),
-              //           )),
-              //         ),
-              //       ),
-              //       Expanded(
-              //         child: ListView.builder(
-              //             physics: const BouncingScrollPhysics(),
-              //             itemCount: experience.length,
-              //             shrinkWrap: true,
-              //             scrollDirection: Axis.horizontal,
-              //             itemBuilder: (context, index) {
-              //               return InkWell(
-              //                 onTap: () {
-              //                   selectExperience(experience[index]);
-              //                 },
-              //                 child: Container(
-              //                   margin:
-              //                       const EdgeInsets.symmetric(horizontal: 4),
-              //                   decoration: BoxDecoration(
-              //                     borderRadius: BorderRadius.circular(16),
-              //                     color:
-              //                         //  isSelected==true
-              //                         //     ? Colors.grey.shade400
-              //                         //     :
-              //                         Colors.redAccent,
-              //                   ),
-              //                   height: 30,
-              //                   width: 59,
-              //                   child: Center(
-              //                       child: Text(
-              //                     experience[index],
-              //                     style: const TextStyle(
-              //                         color:
-              //                             //  isSelected
-              //                             //     ? Colors.white
-              //                             //     :
-              //                             Colors.white,
-              //                         fontSize: 16,
-              //                         fontWeight: FontWeight.w500),
-              //                   )),
-              //                 ),
-              //               );
-              //             }),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-
-              // const SizedBox(height: 20),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              //   height: 34,
-              //   decoration: ShapeDecoration(
-              //     shape: RoundedRectangleBorder(
-              //       side: const BorderSide(width: 1, color: Color(0xFFD3D3D3)),
-              //       borderRadius: BorderRadius.circular(5),
-              //     ),
-              //   ),
-              //   child: Text(
-              //     selectedCategory == ''
-              //         ? 'All Donors'
-              //         : 'Donors with $selectedCategory blood group',
-              //     style: const TextStyle(
-              //       color: Color(0xFF535353),
-              //       fontSize: 13,
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //   ),
-              // ),
-
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('barbars')
@@ -251,7 +145,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   //     const EdgeInsets.symmetric(horizontal: 6),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -296,12 +190,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           e['username'],
                                                           style:
                                                               const TextStyle(
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500,
                                                           ),
                                                         ),
+                                                        Text(e['city']),
                                                         Text(
                                                           e['contact'], // Replace with your experience text
                                                           style:
@@ -322,7 +217,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       Get.to(() =>
                                                           PackageScreen(
                                                             id: e[
-                                                                'donorId'],
+                                                                'donorId'], name: e['username'],
                                                           ));
                                                     },
                                                     child: Container(

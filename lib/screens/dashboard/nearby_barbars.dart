@@ -283,7 +283,7 @@ class _NearbyBarbarsState extends State<NearbyBarbars> {
                                                           Get.to(() =>
                                                               PackageScreen(
                                                                 id: e[
-                                                                    'donorId'],
+                                                                    'donorId'], name: e['username'],
                                                               ));
                                                         },
                                                         child: Container(

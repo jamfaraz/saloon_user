@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:saloon_app/screens/dashboard/book_barber_screen.dart';
 
@@ -7,7 +9,8 @@ import '../../controllers/profile_controller.dart';
 
 class PackageScreen extends StatefulWidget {
   final String id;
-  const PackageScreen({super.key, required this.id});
+  final String name;
+  const PackageScreen({super.key, required this.id, required this.name});
 
   @override
   State<PackageScreen> createState() => _PackageScreenState();
@@ -41,13 +44,17 @@ class _PackageScreenState extends State<PackageScreen> {
                 ),
               ),
             ),
-            SizedBox(width: Get.width * .24),
-            const Text(
-              'Packages',
-              style: TextStyle(
-                color: Color(0xFF1A1A1A),
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+            const SizedBox(
+              width: 34,
+            ),
+            Flexible(
+              child: Text(
+                'Packages of ${widget.name}',
+                style: const TextStyle(
+                  color: Color(0xFF1A1A1A),
+                  fontSize: 19,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -59,6 +66,17 @@ class _PackageScreenState extends State<PackageScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+            
+              // const Text(
+              //   'Before place booking make sure that you have to reach the salon 15 minutes ago of your selected time',
+              //   style:  TextStyle(
+              //       color: Colors.black,
+              //       fontSize: 15
+              //      ),
+              // ),
+              const SizedBox(
+                height: 14,
+              ),
               StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('posts')
@@ -93,11 +111,27 @@ class _PackageScreenState extends State<PackageScreen> {
 
                     return Column(
                       children: [
-                        ListView.builder(
+                    
+              const Text(
+                'Before place booking make sure that you have to reach the salon 15 minutes ago of your selected time',
+                style:  TextStyle(
+                    color: Colors.black,
+                    fontSize: 15
+                   ),
+              ),
+                    const SizedBox(
+                height: 8,
+              ),
+                        GridView.builder(
                           shrinkWrap: true,
                           itemCount: snapshot.data?.docs.length ?? 0,
                           physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.zero,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisExtent: Get.height * .32,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  crossAxisCount: 2),
                           itemBuilder: (context, index) {
                             final data = snapshot.data!.docs[index];
 
@@ -106,149 +140,120 @@ class _PackageScreenState extends State<PackageScreen> {
                                 const SizedBox(
                                   height: 4,
                                 ),
-                                Card(
-                                  shadowColor: Colors.black,
-                                  color: Colors.white,
-                                  elevation: 13,
-                                  child: Container(
-                                    // height: 166,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(children: [
-                                          const Text(
-                                            'Barbar name :',
-                                            style: TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      // Image.network(data['itemImage']),
+                                      Container(
+                                        height: Get.height * .12,
+                                        width: Get.size.width,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    bottomLeft:
+                                                        Radius.circular(6),
+                                                    topRight:
+                                                        Radius.circular(6),
+                                                    topLeft: Radius.circular(6),
+                                                    bottomRight:
+                                                        Radius.circular(6)),
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    data['itemImage']),
+                                                fit: BoxFit.cover)),
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.location_pin,
+                                            color: Colors.green,
+                                            size: 22,
                                           ),
                                           const SizedBox(
-                                            width: 12,
+                                            width: 6,
                                           ),
-                                          Text(
-                                            data['username'],
-                                            style: const TextStyle(
-                                              color: Color(0xFF474747),
-                                              fontSize: 16,
-                                            ),
+                                          Flexible(child: Text(data['address']),)
+                                        ],
+                                      ),
+
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.numbers,
+                                            color: Colors.green,
+                                            size: 22,
                                           ),
-                                        ]),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Price:',
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Text(data['price'])
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.category,
+                                            color: Colors.green,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Flexible(
+                                              child: Text(data['category']))
+                                        ],
+                                      ),
+
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => BarberBookingScreen(
+                                                  barberId: widget.id,
+                                                  name: data['username'],
+                                                  image: data['image']));
+                                            },
+                                            child: Container(
+                                              width: Get.width * .4,
+                                              margin:
+                                                   EdgeInsets.symmetric(
+                                                      horizontal: Get.width*.02,
+                                                      vertical: Get.height*.01),
+                                              height: Get.height * .04,
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.shade400,
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
                                               ),
-                                            ),
-                                            const SizedBox(
-                                              width: 73,
-                                            ),
-                                            Text(
-                                              'Rs.${data['price']}',
-                                              style: const TextStyle(
-                                                color: Color(0xFF474747),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Address:',
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 51,
-                                            ),
-                                            Text(
-                                              data['address'],
-                                              style: const TextStyle(
-                                                color: Color(0xFF474747),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Category:',
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 44,
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                data['category'],
-                                                style: const TextStyle(
-                                                  color: Color(0xFF474747),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 12,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.to(()=>BarberBookingScreen(barberId: widget.id, name: data['username'], image: data['image']))
-                                          ;},
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                left: Get.width * .44),
-                                            height: 34,
-                                            width: Get.width * .4,
-                                            decoration: BoxDecoration(
-                                              color: Colors.red.shade400,
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                'Book now',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
+                                              child: const Center(
+                                                child: Text(
+                                                  'Book now',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

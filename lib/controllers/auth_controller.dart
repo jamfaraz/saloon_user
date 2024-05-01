@@ -162,7 +162,8 @@ class AuthController extends GetxController {
         Get.off(() => const Dashboard());
       }
     } on FirebaseAuthException catch (e) {
-      Get.snackbar('Error', e.toString());
+            Get.snackbar('Error', 'Invalid credentials');
+
 
       progressDialog.dismiss();
       if (e.code == 'email-already-in-use') {
@@ -204,7 +205,7 @@ class AuthController extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       progressDialog.dismiss();
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', 'Invalid credentials');
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: 'Email already in use');
         return;
@@ -239,7 +240,7 @@ class AuthController extends GetxController {
       Get.to(() => const SigninScreen());
     } catch (e) {
       progressDialog.dismiss();
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', 'Invalid credentials');
     }
   }
 

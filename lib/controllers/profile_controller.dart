@@ -111,7 +111,7 @@ class ProfileController extends GetxController {
       return imageUrl;
     } on FirebaseException catch (e) {
       isLoading.value = false;
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', 'error occured while updating profile picture');
     }
 
     return '';

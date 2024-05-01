@@ -39,7 +39,9 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
     'Beared setting',
     'Hair and beared setting',
     'Facial massag',
-    'complete massage and hair setting',
+    'complete massage',
+    'Shave',
+    'Hair dryer',
   ];
 
   String? _category;
@@ -118,7 +120,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                 ),
               ),
             ),
-            SizedBox(width: Get.width * .24),
+            SizedBox(width: Get.width * .2),
             const Text(
               'Book a Barber',
               style: TextStyle(
@@ -132,8 +134,8 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
         elevation: 1,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
+        padding:  EdgeInsets.symmetric(
+          horizontal: Get.width*.022,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -158,7 +160,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                         vertical: MediaQuery.of(context).size.width * 0.030,
-                        horizontal: 9),
+                        horizontal: 2),
                     // prefixIcon: const Icon(Icons.category, color: Colors.black),
                     hintText: 'Select package',
                     enabledBorder: OutlineInputBorder(

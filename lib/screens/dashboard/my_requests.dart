@@ -172,7 +172,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                                     title: const Text(
                                                         "Are you sure ?"),
                                                     content: const Text(
-                                                        "Click Confirm if you want to delete this item"),
+                                                        "Click Confirm if you want to delete this booking"),
                                                     actions: [
                                                       TextButton(
                                                           onPressed: () {
