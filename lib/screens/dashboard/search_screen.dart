@@ -64,6 +64,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     controller: searchController,
                     cursorColor: Colors.red,
                     decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 12),
+
                       hintText: 'Search for barbers',
                       border: InputBorder.none,
                       prefixIcon: (searchText.isEmpty)
@@ -117,7 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Padding(
                         padding: const EdgeInsets.only(top: 233),
                         child: Text(
-                          'No donors Registered yet with $selectedCategory ',
+                          'No barber Registered yet ',
                           style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
@@ -258,7 +260,17 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                 ));
                           } else {
-                            return const SizedBox();
+                            return const  Center(
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 233),
+                        child: Text(
+                          'No barber Registered yet ',
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.redAccent),
+                        ),
+                      ));
                           }
                         },
                       );

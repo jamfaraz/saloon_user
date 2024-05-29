@@ -97,7 +97,7 @@ class AuthController extends GetxController {
                     pickCameraimage();
                     Get.back();
                   },
-                  leading:  Icon(
+                  leading: Icon(
                     Icons.camera_alt,
                     color: Colors.red.shade400,
                   ),
@@ -108,7 +108,7 @@ class AuthController extends GetxController {
                     pickGalleryimage();
                     Get.back();
                   },
-                  leading:  Icon(
+                  leading: Icon(
                     Icons.image,
                     color: Colors.red.shade400,
                   ),
@@ -162,8 +162,7 @@ class AuthController extends GetxController {
         Get.off(() => const Dashboard());
       }
     } on FirebaseAuthException catch (e) {
-            Get.snackbar('Error', 'Invalid credentials');
-
+      Get.snackbar('Error', 'Invalid credentials');
 
       progressDialog.dismiss();
       if (e.code == 'email-already-in-use') {
@@ -182,6 +181,7 @@ class AuthController extends GetxController {
     } catch (e) {
       // print(e);
       progressDialog.dismiss();
+
       Fluttertoast.showToast(msg: 'Something went wrong');
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +61,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                     controller: searchController,
                     cursorColor: Colors.red,
                     decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 12),
                       hintText: 'Search',
                       border: InputBorder.none,
                       prefixIcon: (searchText.isEmpty)
@@ -92,6 +95,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   stream: FirebaseFirestore.instance
                       .collection('appointments')
                       .orderBy('barberName')
+                      .where('status', isEqualTo: 'pending')
                       .where('userId',
                           isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                       .startAt([searchText.toUpperCase()]).endAt(
@@ -126,6 +130,20 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         itemCount: snapshot.data?.docs.length ?? 0,
                         itemBuilder: (context, index) {
                           final e = snapshot.data!.docs[index];
+                          final orderTime =
+                              (e['orderTime'] as Timestamp).toDate();
+                          final currentTime = DateTime.now();
+                          final difference = currentTime.difference(orderTime);
+
+                          String timerText = '';
+                          if (e['status'] == 'pending') {
+                            final minutesLeft = 30 - difference.inMinutes;
+                            final secondsLeft = 60 - difference.inSeconds % 60;
+                            timerText = '${minutesLeft}m ${secondsLeft}s';
+                          } else {
+                            timerText = e['status'];
+                          }
+                          // final e = snapshot.data!.docs[index];
                           if (e["barberName"]
                               .toString()
                               .toLowerCase()
@@ -159,53 +177,63 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        '${e['date']}  ${e['time']}',
+                                        'Time left: $timerText\n${e['date']}',
                                         style: const TextStyle(
                                           fontSize: 10,
                                         ),
                                       ),
-                                      trailing: TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                    title: const Text(
-                                                        "Are you sure ?"),
-                                                    content: const Text(
-                                                        "Click Confirm if you want to delete this booking"),
-                                                    actions: [
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: const Text(
-                                                              "Cancel")),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            profileController
-                                                                .deleteAppointment(
-                                                                    e.id);
-                                                            Get.back();
-                                                          },
-                                                          child: const Text(
-                                                            "Delete",
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                            ),
-                                                          ))
-                                                    ],
-                                                  ));
-                                        },
-                                        child: const Text(
-                                          "delete",
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
+                                      trailing: e['status'] == 'pending'
+                                          ? ElevatedButton(
+                                              onPressed: () =>
+                                                  _cancelOrder(e.id),
+                                              child: const Text('Cancel',
+                                                  style: TextStyle(
+                                                      color: Colors.red)),
+                                            )
+                                          : null,
+
+                                      //  TextButton(
+                                      //   onPressed: () {
+                                      //     showDialog(
+                                      //         context: context,
+                                      //         builder: (context) => AlertDialog(
+                                      //               title: const Text(
+                                      //                   "Are you sure ?"),
+                                      //               content: const Text(
+                                      //                   "Click Confirm if you want to delete this booking"),
+                                      //               actions: [
+                                      //                 TextButton(
+                                      //                     onPressed: () {
+                                      //                       Navigator.pop(
+                                      //                           context);
+                                      //                     },
+                                      //                     child: const Text(
+                                      //                         "Cancel")),
+                                      //                 TextButton(
+                                      //                     onPressed: () {
+                                      //                       profileController
+                                      //                           .deleteAppointment(
+                                      //                               e.id);
+                                      //                       Get.back();
+                                      //                     },
+                                      //                     child: const Text(
+                                      //                       "Delete",
+                                      //                       style: TextStyle(
+                                      //                         color: Colors.red,
+                                      //                       ),
+                                      //                     ))
+                                      //               ],
+                                      //             ));
+                                      //   },
+                                      //   child: const Text(
+                                      //     "delete",
+                                      //     style: TextStyle(
+                                      //       color: Colors.red,
+                                      //       fontSize: 13,
+                                      //       fontWeight: FontWeight.w400,
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ),
                                   ),
                                 ),
@@ -223,5 +251,19 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
         ),
       ),
     );
+  }
+
+  Timer? _timer;
+  void _cancelOrder(String orderId) {
+    FirebaseFirestore.instance.collection('appointments').doc(orderId).delete().then((_) {
+      _timer?.cancel();
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }

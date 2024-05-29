@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +34,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
   TimeOfDay selectedTime = TimeOfDay.now();
   UserModel? userModel;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late Timer? _timer;
 
   final _categories = <String>[
     'Simple hair cut',
@@ -57,6 +60,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
     try {
       progressDialog.show();
       User? user = _auth.currentUser;
+      DateTime _orderTime = DateTime.now();
       String uid = user!.uid;
       var uuid = const Uuid();
       var myId = uuid.v6();
@@ -84,8 +88,12 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
         'category': category,
         'date': date,
         'time': time,
-        'status': 'ongoing',
+        'status': 'pending',
+        'orderTime': _orderTime,
+      }).then((doc) {
+        _startTimer(myId);
       });
+
       progressDialog.dismiss();
       Fluttertoast.showToast(msg: 'Booking successful');
     } catch (e) {
@@ -95,10 +103,50 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
     }
   }
 
+  void _startTimer(String orderId) {
+    const duration = Duration(seconds: 1);
+    _timer = Timer.periodic(duration, (timer) async {
+      final orderSnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(orderId)
+          .get();
+      final orderData = orderSnapshot.data();
+      if (orderData == null) return;
+
+      final orderTime = (orderData['orderTime'] as Timestamp).toDate();
+      final currentTime = DateTime.now();
+      final difference = currentTime.difference(orderTime);
+
+      if (difference.inMinutes >= 30 && orderData['status'] == 'pending') {
+        FirebaseFirestore.instance
+            .collection('appointments')
+            .doc(orderId)
+            .update({
+          'status': 'cancelled',
+        });
+        timer.cancel();
+      }
+
+      setState(() {});
+    });
+  }
+ void _cancelOrder(String orderId) {
+    FirebaseFirestore.instance.collection('appointments').doc(orderId).update({
+      'status': 'cancelled',
+    }).then((_) {
+      _timer?.cancel();
+      setState(() {});
+    });
+  }
+ @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Row(
@@ -134,17 +182,16 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
         elevation: 1,
       ),
       body: Padding(
-        padding:  EdgeInsets.symmetric(
-          horizontal: Get.width*.022,
+        padding: EdgeInsets.symmetric(
+          horizontal: Get.width * .022,
         ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: Get.height*.03,
+                height: Get.height * .03,
               ),
-             
               Text(
                 'Package',
                 style: TextStyle(
@@ -175,11 +222,11 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                         color: Colors.black,
                       ),
                     ),
-                     hintStyle: const TextStyle(
-                    color: Color(0xFF828A89),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+                    hintStyle: const TextStyle(
+                      color: Color(0xFF828A89),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                     prefixIcon: const Icon(
                       Icons.type_specimen,
                       color: Colors.redAccent,
@@ -336,7 +383,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                   String time = timeController.text.trim();
                   //
                   //
-          
+
                   if (_category.toString().isEmpty ||
                       date.isEmpty ||
                       time.isEmpty) {
@@ -351,7 +398,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                         time: time,
                         name: name);
                   }
-          
+
                   categoryController.clear();
                   timeController.clear();
                   dateController.clear();
@@ -363,7 +410,7 @@ class _BarberBookingScreenState extends State<BarberBookingScreen> {
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(44),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                     child: const Center(
                       child: Text(

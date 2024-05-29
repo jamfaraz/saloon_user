@@ -7,6 +7,7 @@ import 'package:saloon_app/screens/dashboard/search_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'nearby_barbars.dart';
+import 'package_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,8 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var snapshots = await FirebaseFirestore.instance
         .collection('barbars')
         .limit(4)
-        .orderBy('username')
-        .startAt([searchText.toUpperCase()]).endAt(['$searchText\uf8ff']).get();
+        .get();
     setState(() {
       _lawyers = snapshots.docs.where((doc) {
         double lawyerLatitude = doc['latitude'];
@@ -169,6 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: searchController,
                           cursorColor: Colors.red,
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 12),
                             prefixIcon: (searchText.isEmpty)
                                 ? const Icon(
                                     Icons.search,
@@ -270,119 +271,139 @@ class _HomeScreenState extends State<HomeScreen> {
                                 itemCount: _lawyers.length,
                                 itemBuilder: (context, index) {
                                   DocumentSnapshot e = snapshot.data![index];
+                                    if (e["username"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
+
                                   return Column(
                                     children: [
-                                      Card(
-                                        color: Colors.white,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[100],
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 10),
-                                          height: 120,
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                height: Get.height * .12,
-                                                width: Get.width * .22,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  child: Image.network(
-                                                    e['image'],
-                                                    fit: BoxFit.cover,
-                                                    height: 75,
+                                      InkWell(
+                                        onTap: () {
+                                          Get.to(() => PackageScreen(
+                                                id: e['donorId'],
+                                                name: e['username'],
+                                              ));
+                                        },
+                                        child: Card(
+                                          color: Colors.white,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[100],
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 10),
+                                            height: 120,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  height: Get.height * .12,
+                                                  width: Get.width * .22,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                    child: Image.network(
+                                                      e['image'],
+                                                      fit: BoxFit.cover,
+                                                      height: 75,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 6, top: 9),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          e['username'],
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 6, top: 9),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            e['username'],
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        // 5.widthBox,
-                                                        // Text(
-                                                        //   '4.7',
-                                                        //   style: GoogleFonts.poppins(
-                                                        //     color: Colors.black,
-                                                        //     fontSize: 12,
-                                                        //     fontWeight: FontWeight.bold,
-                                                        //   ),
-                                                        // ),
-                                                        // const Icon(
-                                                        //   Icons.star,
-                                                        //   color: Colors.amber,
-                                                        // ),
-                                                      ],
-                                                    ),
-                                                    2.heightBox,
-                                                    Text(
-                                                      e['contact'],
-                                                      style: const TextStyle(
-                                                        color: Colors.black87,
-                                                        fontSize: 10,
+                                                          // 5.widthBox,
+                                                          // Text(
+                                                          //   '4.7',
+                                                          //   style: GoogleFonts.poppins(
+                                                          //     color: Colors.black,
+                                                          //     fontSize: 12,
+                                                          //     fontWeight: FontWeight.bold,
+                                                          //   ),
+                                                          // ),
+                                                          // const Icon(
+                                                          //   Icons.star,
+                                                          //   color: Colors.amber,
+                                                          // ),
+                                                        ],
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 22,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        const Text(
-                                                          'City',
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w600,
+                                                      2.heightBox,
+                                                      Text(
+                                                        e['contact'],
+                                                        style: const TextStyle(
+                                                          color: Colors.black87,
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 22,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const Text(
+                                                            'City',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 33,
-                                                        ),
-                                                        Text(
-                                                          e['city'],
-                                                          style:
-                                                              const TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontSize: 11,
+                                                          const SizedBox(
+                                                            width: 33,
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                          Text(
+                                                            e['city'],
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Colors
+                                                                  .black87,
+                                                              fontSize: 11,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   );
-                                },
+                                 } },
                               );
                             }
                           }),
@@ -419,9 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       stream: FirebaseFirestore.instance
                           .collection('barbars')
                           .limit(4)
-                          .orderBy('username')
-                          .startAt([searchText.toUpperCase()]).endAt(
-                              ['$searchText\uf8ff']).snapshots(),
+                         .snapshots(),
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.connectionState ==
@@ -439,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Text(
-                              'No donors Registered yet',
+                              'No barber Registered yet',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -459,108 +478,124 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             itemBuilder: (context, index) {
                               final e = snapshot.data!.docs[index];
-                              return Card(
-                                color: Colors.white,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  height: 120,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: Get.height * .12,
-                                        width: Get.width * .22,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Image.network(
-                                            e['image'],
-                                            fit: BoxFit.cover,
-                                            height: 75,
+
+                               if (e["username"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
+
+                              return InkWell(
+                                onTap: () {
+                                  Get.to(() => PackageScreen(
+                                        id: e['donorId'],
+                                        name: e['username'],
+                                      ));
+                                },
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    height: 120,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: Get.height * .12,
+                                          width: Get.width * .22,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: Image.network(
+                                              e['image'],
+                                              fit: BoxFit.cover,
+                                              height: 75,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 6, top: 9),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  e['username'],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 6, top: 9),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    e['username'],
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                                // 5.widthBox,
-                                                // Text(
-                                                //   '4.7',
-                                                //   style: GoogleFonts.poppins(
-                                                //     color: Colors.black,
-                                                //     fontSize: 12,
-                                                //     fontWeight: FontWeight.bold,
-                                                //   ),
-                                                // ),
-                                                // const Icon(
-                                                //   Icons.star,
-                                                //   color: Colors.amber,
-                                                // ),
-                                              ],
-                                            ),
-                                            2.heightBox,
-                                            Text(
-                                              e['contact'],
-                                              style: const TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 10,
+                                                  // 5.widthBox,
+                                                  // Text(
+                                                  //   '4.7',
+                                                  //   style: GoogleFonts.poppins(
+                                                  //     color: Colors.black,
+                                                  //     fontSize: 12,
+                                                  //     fontWeight: FontWeight.bold,
+                                                  //   ),
+                                                  // ),
+                                                  // const Icon(
+                                                  //   Icons.star,
+                                                  //   color: Colors.amber,
+                                                  // ),
+                                                ],
                                               ),
-                                            ),
-                                            const SizedBox(
-                                              height: 22,
-                                            ),
-                                            Row(
-                                              children: [
-                                                const Text(
-                                                  'City',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w600,
+                                              2.heightBox,
+                                              Text(
+                                                e['contact'],
+                                                style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 22,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Text(
+                                                    'City',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 33,
-                                                ),
-                                                Text(
-                                                  e['city'],
-                                                  style: const TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 11,
+                                                  const SizedBox(
+                                                    width: 33,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                                  Text(
+                                                    e['city'],
+                                                    style: const TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
-                            },
+                             } },
                           );
                         }
                       }),
@@ -584,7 +619,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Chat with experts ',
+                                  'Meeting with experts ',
                                   style: TextStyle(
                                     color: Color(0xFFF6FAFC),
                                     fontSize: 16,
@@ -592,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 const Text(
-                                  'Access to Expertise',
+                                  'Easy Access',
                                   style: TextStyle(
                                     color: Color(0xFFF6FAFC),
                                     fontSize: 12,
@@ -631,7 +666,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   child: const Center(
                                     child: Text(
-                                      'Chat Now',
+                                      'Book Now',
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 10,
@@ -654,10 +689,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
-                          'assets/person.png',
+                          'assets/barber.jpeg',
                           width: 244,
                           height: 207,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),

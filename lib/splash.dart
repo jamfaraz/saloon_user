@@ -22,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 2), () {
       Get.offAll(() => const AuthGate());
     });
-
   }
 
   @override
@@ -31,17 +30,22 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          
-          Container(
-            width: Get.width,
-            alignment: Alignment.center,
-            child: Lottie.asset('assets/saloon.json'),
-          )
-        ],
-      ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+               Text(
+              'Saloon Ease',
+              style: TextStyle(
+                  color: Colors.red, fontSize: 36, fontWeight: FontWeight.bold),
+            ),
+            Container(
+              width: Get.width,
+              // alignment: Alignment.center,
+              child: Lottie.asset('assets/saloon.json'),
+            ),
+         
+          ],
+        ),
       ),
     );
   }

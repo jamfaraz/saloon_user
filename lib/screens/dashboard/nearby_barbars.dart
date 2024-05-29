@@ -128,6 +128,8 @@ class _NearbyBarbarsState extends State<NearbyBarbars> {
                     controller: searchController,
                     cursorColor: Colors.red,
                     decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(top: 12),
+
                       hintText: 'Search for barbars',
                       border: InputBorder.none,
                       prefixIcon: (searchText.isEmpty)

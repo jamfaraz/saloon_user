@@ -128,7 +128,7 @@ class _PackageScreenState extends State<PackageScreen> {
                           physics: const BouncingScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  mainAxisExtent: Get.height * .32,
+                                  mainAxisExtent: Get.height * .3,
                                   crossAxisSpacing: 12,
                                   mainAxisSpacing: 12,
                                   crossAxisCount: 2),
@@ -140,120 +140,118 @@ class _PackageScreenState extends State<PackageScreen> {
                                 const SizedBox(
                                   height: 4,
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      // Image.network(data['itemImage']),
-                                      Container(
-                                        height: Get.height * .12,
-                                        width: Get.size.width,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    bottomLeft:
-                                                        Radius.circular(6),
-                                                    topRight:
-                                                        Radius.circular(6),
-                                                    topLeft: Radius.circular(6),
-                                                    bottomRight:
-                                                        Radius.circular(6)),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    data['itemImage']),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.location_pin,
-                                            color: Colors.green,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(
-                                            width: 6,
-                                          ),
-                                          Flexible(child: Text(data['address']),)
-                                        ],
-                                      ),
-
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.numbers,
-                                            color: Colors.green,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(
-                                            width: 6,
-                                          ),
-                                          Text(data['price'])
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.category,
-                                            color: Colors.green,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(
-                                            width: 6,
-                                          ),
-                                          Flexible(
-                                              child: Text(data['category']))
-                                        ],
-                                      ),
-
-                                      Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Get.to(() => BarberBookingScreen(
-                                                  barberId: widget.id,
-                                                  name: data['username'],
-                                                  image: data['image']));
-                                            },
-                                            child: Container(
-                                              width: Get.width * .4,
-                                              margin:
-                                                   EdgeInsets.symmetric(
-                                                      horizontal: Get.width*.02,
-                                                      vertical: Get.height*.01),
-                                              height: Get.height * .04,
-                                              decoration: BoxDecoration(
-                                                color: Colors.red.shade400,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              child: const Center(
-                                                child: Text(
-                                                  'Book now',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
+                                GridTile(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        // Image.network(data['itemImage']),
+                                        Container(
+                                          height: Get.height * .12,
+                                          width: Get.size.width,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(6),
+                                                      topRight:
+                                                          Radius.circular(6),
+                                                      topLeft: Radius.circular(6),
+                                                      bottomRight:
+                                                          Radius.circular(6)),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      data['itemImage']),
+                                                  fit: BoxFit.cover)),
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.location_pin,
+                                              color: Colors.green,
+                                              size: 22,
+                                            ),
+                                            const SizedBox(
+                                              width: 6,
+                                            ),
+                                            Flexible(child: Text(data['address'],overflow: TextOverflow.ellipsis,),)
+                                          ],
+                                        ),
+                                  
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.numbers,
+                                              color: Colors.green,
+                                              size: 22,
+                                            ),
+                                            const SizedBox(
+                                              width: 6,
+                                            ),
+                                            Text(data['price'])
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.category,
+                                              color: Colors.green,
+                                              size: 22,
+                                            ),
+                                            const SizedBox(
+                                              width: 6,
+                                            ),
+                                            Flexible(
+                                                child: Text(data['category'],overflow: TextOverflow.ellipsis))
+                                          ],
+                                        ),
+                                  
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(() => BarberBookingScreen(
+                                                barberId: widget.id,
+                                                name: data['username'],
+                                                image: data['image']));
+                                          },
+                                          child: Container(
+                                            width: Get.width * .4,
+                                            margin:
+                                                 EdgeInsets.symmetric(
+                                                    horizontal: Get.width*.02,
+                                                    vertical: Get.height*.01),
+                                            height: Get.height * .04,
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.shade400,
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: const Center(
+                                              child: Text(
+                                                'Book now',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
